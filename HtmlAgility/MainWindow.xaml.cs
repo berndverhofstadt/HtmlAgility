@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HtmlAgilityPack;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 /* Bernd Verhofstadt
  * Artesis Plantijn Hogeschool Antwerpen
@@ -27,12 +28,22 @@ namespace HtmlAgility
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
+    /*TODO
+     * Delete id="menu"
+     * Delete class = "tnetUrl"
+     * Delete id="footer"
+     */
+
     public partial class MainWindow : Window
     {
         private int l = 0;
         private string[] linkPage = new string[100]; 
         private string[] titlePage = new string[100];
-
+        DispatcherTimer ProgressWebsite;
+        
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -42,6 +53,8 @@ namespace HtmlAgility
             DateTime time = DateTime.Now;
             string format = "D";
             DatumToday.Content = time.ToString(format);
+            ProgressWebsite = new DispatcherTimer(DispatcherPriority.Render);
+            InitializeTimer();
         }
 
         void wc_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -49,6 +62,7 @@ namespace HtmlAgility
             
             if (e.Error == null)
             {
+                
                 var scrape = new HtmlAgilityPack.HtmlDocument();
                 scrape.LoadHtml(e.Result);
                 try
@@ -83,17 +97,18 @@ namespace HtmlAgility
                             }
                         }
                     }
-                    
+
                     try
                     {
+                        ProgressBar.Value = ProgressBar.Minimum;
+                        ProgressWebsite.Start();
                         BrowserPage.Navigate(linkPage[0]);
                     }
                     catch (Exception)
                     {
                         MessageBox.Show("Can't load page...");
                         throw;
-                    }
-                    
+                    }                    
                 }
                 catch (Exception)
                 {
@@ -102,11 +117,28 @@ namespace HtmlAgility
             }
         }
 
+        private void InitializeTimer()
+        {
+            ProgressWebsite.Tick +=ProgressWebsite_Tick;
+            ProgressWebsite.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            ProgressWebsite.IsEnabled = true;
+        }
+
+        private void ProgressWebsite_Tick(object sender, EventArgs e)
+        {
+            ProgressBar.Value += 1;
+            if (ProgressBar.Value == ProgressBar.Maximum)
+                ProgressWebsite.Stop();
+        }
+
         private void listviewresult_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
+                ProgressBar.Value = ProgressBar.Minimum;
+                ProgressWebsite.Start();
                 int selectedIndex = listviewresult.SelectedIndex;
+                //BrowserPage.Navigate("http://verhofstadt.eu");
                 BrowserPage.Navigate(linkPage[selectedIndex]);
             }
             catch (Exception)
@@ -123,12 +155,23 @@ namespace HtmlAgility
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
             try
             {
+                ProgressBar.Value = ProgressBar.Minimum;
+                ProgressWebsite.Start();
                 BrowserPage.GoBack();
             }
-            catch (Exception) {}
-        }       
+            catch (Exception) 
+            {
+                ProgressWebsite.Stop();
+                ProgressBar.Value = ProgressBar.Maximum;
+            }
+        }
+
+        private void BrowserPage_LoadCompleted(object sender, NavigationEventArgs e)
+        {
+            ProgressWebsite.Stop();
+            ProgressBar.Value = ProgressBar.Maximum;
+        }      
     }
 }
