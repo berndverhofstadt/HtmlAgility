@@ -1,4 +1,4 @@
-﻿<Window x:Class="HtmlAgility.MainWindow"
+﻿<Window x:Class="Tweakers.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Tweakers" Height="500" Width="1028" Icon="favicon (1).ico">
@@ -9,14 +9,14 @@
             <RowDefinition Height="35" Name="Footer" ></RowDefinition>
         </Grid.RowDefinitions>
         
-        <Grid Grid.Column="0" Grid.Row="1">
+        <Grid Grid.Column="0" Grid.Row="1" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MaxWidth="500" Width="auto" />
                 
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <ProgressBar Grid.Column="1" VerticalAlignment="Top" Height="5" Width="Auto" Margin="10,10,10,0" Name="ProgressBar" ></ProgressBar>
-            <WebBrowser Grid.Column="1" Margin="10,25,10,10" Name="BrowserPage" LoadCompleted="BrowserPage_LoadCompleted" />
+            <ProgressBar Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Height="5" Width="Auto" Margin="10,5,10,0" Name="ProgressBar1" Foreground="#b31138"></ProgressBar>
+            <WebBrowser Grid.Column="1" Margin="10,15,10,10" Name="BrowserPage" LoadCompleted="BrowserPage_LoadCompleted" />
             <ListView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Name="listviewresult" Grid.Column="0" SelectionChanged="listviewresult_SelectionChanged" />
         </Grid>
         <Grid Background="#b31138" Grid.Row="0">
@@ -26,9 +26,10 @@
             <Label Name="DatumToday" Grid.Row="0" HorizontalAlignment="Right" Margin="20" FontSize="15" FontStyle="Italic" Foreground ="White" ></Label>
             <Image HorizontalAlignment="Center" Width="60" Height="65" Source="tweakers-icon-tra.png"  />
         </Grid>
-        
+
         <Label Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15">
             <Hyperlink Click="Hyperlink_Click">AP Hogeschool Antwerpen | Bernd Verhofstadt</Hyperlink>
         </Label>
+        
     </Grid>
 </Window>
